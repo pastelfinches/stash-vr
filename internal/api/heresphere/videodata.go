@@ -212,6 +212,7 @@ func set3DFormat(vd *library.VideoData, dto *videoDataDto) {
 		case util.StrSliceEquals(t.Name, t.Aliases, internal.TagVR_RF52):
 			dto.Projection = "fisheye"
 			dto.Stereo = "sbs"
+			dto.Lens = "Linear"
 			dto.Fov = 190.0
 			continue
 		case util.StrSliceEquals(t.Name, t.Aliases, internal.TagVR_CUBEMAP):
