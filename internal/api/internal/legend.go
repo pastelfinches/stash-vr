@@ -32,4 +32,6 @@ var (
 
 	TagVR_CUBEMAP = "CUBEMAP"
 	TagVR_EAC     = "EAC"
+
+	TagVR_PASSTHROUGH = "PASSTHROUGH"
 )

@@ -38,6 +38,8 @@ type videoDataDto struct {
 	Media          []mediaDto    `json:"media,omitempty"`
 	Subtitles      []subtitleDto `json:"subtitles,omitempty"`
 
+	AlphaPackedSettings *alphaPackedSettingsDto `json:"alphaPackedSettings,omitempty"`
+
 	WriteFavorite *bool `json:"writeFavorite,omitempty"`
 	WriteRating   *bool `json:"writeRating,omitempty"`
 	WriteTags     *bool `json:"writeTags,omitempty"`
@@ -62,6 +64,14 @@ type subtitleDto struct {
 	Name     string `json:"name,omitempty"`
 	Language string `json:"language,omitempty"`
 	Url      string `json:"url,omitempty"`
+}
+
+type alphaPackedSettingsDto struct {
+	ShiftX            *float32 `json:"shiftX,omitempty"`
+	ShiftY            *float32 `json:"shiftY,omitempty"`
+	ScaleX            *float32 `json:"scaleX,omitempty"`
+	ScaleY            *float32 `json:"scaleY,omitempty"`
+	OpacityMultiplier *float32 `json:"opacityMultiplier,omitempty"`
 }
 
 func buildVideoData(ctx context.Context, vd *library.VideoData, baseUrl string) (*videoDataDto, error) {
@@ -116,6 +126,8 @@ func buildVideoData(ctx context.Context, vd *library.VideoData, baseUrl string) 
 	setMediaSources(vd, &dto)
 
 	set3DFormat(vd, &dto)
+
+	setPassthrough(vd, &dto)
 
 	setScripts(vd, &dto)
 
@@ -202,6 +214,15 @@ func set3DFormat(vd *library.VideoData, dto *videoDataDto) {
 		case util.StrSliceEquals(t.Name, t.Aliases, internal.TagVR_TB):
 			dto.Stereo = "tb"
 			continue
+		}
+	}
+}
+
+func setPassthrough(vd *library.VideoData, dto *videoDataDto) {
+	for _, t := range vd.SceneParts.Tags {
+		if util.StrSliceEquals(t.Name, t.Aliases, internal.TagVR_PASSTHROUGH) {
+			dto.AlphaPackedSettings = &alphaPackedSettingsDto{}
+			return
 		}
 	}
 }
