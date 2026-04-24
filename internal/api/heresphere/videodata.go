@@ -9,10 +9,22 @@ import (
 	"stash-vr/internal/library"
 	"stash-vr/internal/stash"
 	"stash-vr/internal/util"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/rs/zerolog/log"
 )
+
+type hsFloat float32
+
+func (f hsFloat) MarshalJSON() ([]byte, error) {
+	s := strconv.FormatFloat(float64(f), 'f', -1, 32)
+	if !strings.ContainsRune(s, '.') {
+		s += ".0"
+	}
+	return []byte(s), nil
+}
 
 type videoDataDto struct {
 	Access int `json:"access"`
@@ -30,7 +42,7 @@ type videoDataDto struct {
 	IsFavorite     *bool         `json:"isFavorite,omitempty"`
 	Projection     string        `json:"projection,omitempty"`
 	Stereo         string        `json:"stereo,omitempty"`
-	Fov            float32       `json:"fov,omitempty"`
+	Fov            hsFloat       `json:"fov,omitempty"`
 	Lens           string        `json:"lens,omitempty"`
 	EventServer    *string       `json:"eventServer,omitempty"`
 	Scripts        []scriptDto   `json:"scripts,omitempty"`
@@ -67,11 +79,11 @@ type subtitleDto struct {
 }
 
 type alphaPackedSettingsDto struct {
-	ShiftX            *float32 `json:"shiftX,omitempty"`
-	ShiftY            *float32 `json:"shiftY,omitempty"`
-	ScaleX            *float32 `json:"scaleX,omitempty"`
-	ScaleY            *float32 `json:"scaleY,omitempty"`
-	OpacityMultiplier *float32 `json:"opacityMultiplier,omitempty"`
+	ShiftX            *hsFloat `json:"shiftX,omitempty"`
+	ShiftY            *hsFloat `json:"shiftY,omitempty"`
+	ScaleX            *hsFloat `json:"scaleX,omitempty"`
+	ScaleY            *hsFloat `json:"scaleY,omitempty"`
+	OpacityMultiplier *hsFloat `json:"opacityMultiplier,omitempty"`
 }
 
 func buildVideoData(ctx context.Context, vd *library.VideoData, baseUrl string) (*videoDataDto, error) {
@@ -222,11 +234,11 @@ func setPassthrough(vd *library.VideoData, dto *videoDataDto) {
 	for _, t := range vd.SceneParts.Tags {
 		if util.StrSliceEquals(t.Name, t.Aliases, internal.TagVR_PASSTHROUGH) {
 			dto.AlphaPackedSettings = &alphaPackedSettingsDto{
-				ShiftX:            util.Ptr(float32(0.25)),
-				ShiftY:            util.Ptr(float32(-0.5)),
-				ScaleX:            util.Ptr(float32(0.4)),
-				ScaleY:            util.Ptr(float32(0.4)),
-				OpacityMultiplier: util.Ptr(float32(1.2)),
+				ShiftX:            util.Ptr(hsFloat(0.25)),
+				ShiftY:            util.Ptr(hsFloat(-0.5)),
+				ScaleX:            util.Ptr(hsFloat(0.4)),
+				ScaleY:            util.Ptr(hsFloat(0.4)),
+				OpacityMultiplier: util.Ptr(hsFloat(1.2)),
 			}
 			return
 		}
