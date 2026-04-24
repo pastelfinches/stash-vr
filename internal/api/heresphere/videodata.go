@@ -233,13 +233,7 @@ func set3DFormat(vd *library.VideoData, dto *videoDataDto) {
 func setPassthrough(vd *library.VideoData, dto *videoDataDto) {
 	for _, t := range vd.SceneParts.Tags {
 		if util.StrSliceEquals(t.Name, t.Aliases, internal.TagVR_PASSTHROUGH) {
-			dto.AlphaPackedSettings = &alphaPackedSettingsDto{
-				ShiftX:            util.Ptr(hsFloat(0.25)),
-				ShiftY:            util.Ptr(hsFloat(-0.5)),
-				ScaleX:            util.Ptr(hsFloat(0.4)),
-				ScaleY:            util.Ptr(hsFloat(0.4)),
-				OpacityMultiplier: util.Ptr(hsFloat(1.2)),
-			}
+			dto.AlphaPackedSettings = &alphaPackedSettingsDto{}
 			return
 		}
 	}
