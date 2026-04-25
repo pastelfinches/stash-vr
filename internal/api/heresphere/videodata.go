@@ -66,13 +66,7 @@ type subtitleDto struct {
 	Url      string `json:"url,omitempty"`
 }
 
-type alphaPackedSettingsDto struct {
-	ShiftX            *float32 `json:"shiftX,omitempty"`
-	ShiftY            *float32 `json:"shiftY,omitempty"`
-	ScaleX            *float32 `json:"scaleX,omitempty"`
-	ScaleY            *float32 `json:"scaleY,omitempty"`
-	OpacityMultiplier *float32 `json:"opacityMultiplier,omitempty"`
-}
+type alphaPackedSettingsDto struct{}
 
 func buildVideoData(ctx context.Context, vd *library.VideoData, baseUrl string) (*videoDataDto, error) {
 	videoId := vd.Id()
