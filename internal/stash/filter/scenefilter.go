@@ -46,7 +46,12 @@ func SavedFilterToSceneFilter(ctx context.Context, savedFilter gql.SavedFilterPa
 func parseObjectFilter(ctx context.Context, objects map[string]any) (gql.SceneFilterType, error) {
 	var sft gql.SceneFilterType
 	for k, v := range objects {
-		setSceneFilterCriterion(ctx, k, v.(map[string]any), &sft)
+		m, ok := v.(map[string]any)
+		if !ok {
+			log.Ctx(ctx).Debug().Str("type", k).Interface("value", v).Msg("Ignoring criterion with non-object value")
+			continue
+		}
+		setSceneFilterCriterion(ctx, k, m, &sft)
 	}
 	return sft, nil
 }
